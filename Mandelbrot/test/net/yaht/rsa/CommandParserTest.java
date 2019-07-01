@@ -7,10 +7,19 @@ import static org.junit.Assert.assertTrue;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 
+/**
+ * Contains tests for the CommandParser class
+ *
+ */
 public class CommandParserTest {
 	private static final double DELTA = 0.00001;
 	private CommandParser commandParser = new CommandParser();
 
+	/**
+	 * Tests if the user input will be parsed correctly
+	 * 
+	 * @throws ParseException If a parsing exception occurs
+	 */
 	@Test
 	public void testParseCommand() throws ParseException {
 		String[] programArguments = { "-t", "3", "-s", "2048x1024", "-rect", "-2.0:2.0:-1.0:1.0", "-q", "-o",
@@ -39,6 +48,12 @@ public class CommandParserTest {
 		assertEquals(expectedOutputFileName, imageProperties.getOutputFileName());
 	}
 
+	/**
+	 * Tests whether the correct values will be used if there is no user input for
+	 * the properties
+	 * 
+	 * @throws ParseException If a parsing exception occurs
+	 */
 	@Test
 	public void testParseCommandWithDefaultValues() throws ParseException {
 		String[] programArguments = {};

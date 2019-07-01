@@ -7,8 +7,15 @@ import org.apache.commons.cli.ParseException;
 
 import net.yaht.rsa.logger.Logger;
 
+/**
+ * Main class that starts the fractal rendering process
+ */
 public class FractalRendererStarter {
-
+	/**
+	 * Starts the fractal rendering process
+	 * 
+	 * @param args Console input arguments
+	 */
 	public static void main(String[] args) {
 		Logger logger = new Logger(FractalRendererStarter.class.getName(), Level.SEVERE);
 

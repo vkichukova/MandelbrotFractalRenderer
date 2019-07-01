@@ -10,13 +10,16 @@ import org.apache.commons.math3.complex.Complex;
 
 import net.yaht.rsa.logger.Logger;
 
+/**
+ * Runnable that renders a given column of the image
+ */
 public class ColumnRenderer implements Runnable {
 	private static final int MAX_ITERATIONS = 500;
 	private static final Logger LOGGER = new Logger(ImageRenderer.class.getName(), Level.INFO);
 
 	private static List<Integer> colors = new ArrayList<>();
 	private ImageProperties imageProperties;
-	private int columnNumber;
+	private int columnIndex;
 	private BufferedImage image;
 	private String currentThreadName = Thread.currentThread().getName();
 
@@ -24,12 +27,23 @@ public class ColumnRenderer implements Runnable {
 		fillColorsList();
 	}
 
-	public ColumnRenderer(ImageProperties imageProperties, BufferedImage image, int columnNumber) {
+	/**
+	 * Constructs a column renderer
+	 * 
+	 * @param imageProperties Already defined default properties for the image
+	 * @param image           The image that will be rendered
+	 * @param columnIndex     Index of the current column
+	 */
+	public ColumnRenderer(ImageProperties imageProperties, BufferedImage image, int columnIndex) {
 		this.imageProperties = imageProperties;
-		this.columnNumber = columnNumber;
+		this.columnIndex = columnIndex;
 		this.image = image;
 	}
 
+	/**
+	 * Iterates the pixels in the column and calculates what color to use for each
+	 * pixel
+	 */
 	@Override
 	public void run() {
 
@@ -46,13 +60,13 @@ public class ColumnRenderer implements Runnable {
 		long startTime = Calendar.getInstance().getTimeInMillis();
 
 		for (int row = 0; row < imageHeight; row++) {
-			double realPart = (columnNumber / imageWidth) * complexPlaneWidth + xMin;
+			double realPart = (columnIndex / imageWidth) * complexPlaneWidth + xMin;
 			double imaginaryPart = (row / imageHeight) * complexPlaneHeight + yMin;
 			Complex startingComplexNumber = new Complex(realPart, imaginaryPart);
 
 			int iterations = calculateIterations(startingComplexNumber);
 			int color = calculateColor(iterations);
-			image.setRGB(columnNumber, row, color);
+			image.setRGB(columnIndex, row, color);
 		}
 
 		if (!imageProperties.isQuietMode()) {
@@ -61,10 +75,14 @@ public class ColumnRenderer implements Runnable {
 		}
 	}
 
-	private void logStartingInfo() {
-		LOGGER.logMessage(Level.INFO, "Thread [" + currentThreadName + "] starts working on column:" + columnNumber);
-	}
-
+	/**
+	 * Calculates iterations based on the position of the pixel against the
+	 * Mandelbrot set
+	 * 
+	 * @param startingComplexNumber Complex number from which the formula will be
+	 *                              calculated
+	 * @return Number of iterations for calculating
+	 */
 	private int calculateIterations(Complex startingComplexNumber) {
 		Complex newComplexNumber = startingComplexNumber;
 		for (int i = 0; i < MAX_ITERATIONS; i++) {
@@ -76,16 +94,24 @@ public class ColumnRenderer implements Runnable {
 		return MAX_ITERATIONS;
 	}
 
-	private static Complex calculateFractalFormula(Complex z, Complex c) {
-		// formula is: F(Z) = (Z + e^Z)^2 + C
+	/**
+	 * Applies the following formula for the 2 numbers: F(Z) = (Z + e^Z)^2 + C
+	 * 
+	 * @param z Complex number
+	 * @param c Complex number
+	 * @return Complex number - result of the applied formula
+	 */
+	private Complex calculateFractalFormula(Complex z, Complex c) {
 		return (z.add(z.exp())).pow(2).add(c);
 	}
 
 	/**
-	 * The color depends on the distance between the point and the mandelbrot set
+	 * Gets the color depending on the distance between the point and the Mandelbrot
+	 * set. If the point is in the set, then it is black, otherwise it is one of the
+	 * predefined 10 colors of the color scheme.
 	 * 
 	 * @param iterations
-	 * @return
+	 * @return color for this pixel
 	 */
 	private int calculateColor(int iterations) {
 		int color = 0x000000; // black color
@@ -97,16 +123,33 @@ public class ColumnRenderer implements Runnable {
 		return color;
 	}
 
-	private void logEndingInfo() {
-		LOGGER.logMessage(Level.INFO, "Thread [" + currentThreadName + "] ends working on column:" + columnNumber);
+	/**
+	 * Logs start of column rendering
+	 */
+	private void logStartingInfo() {
+		LOGGER.logMessage(Level.INFO, "Thread [" + currentThreadName + "] starts working on column:" + columnIndex);
 	}
 
+	/**
+	 * Logs end of column rendering
+	 */
+	private void logEndingInfo() {
+		LOGGER.logMessage(Level.INFO, "Thread [" + currentThreadName + "] ends working on column:" + columnIndex);
+	}
+
+	/**
+	 * Logs information about the thread execution time
+	 * @param startTime Starting time in milliseconds
+	 */
 	private void logWorkingTimeInfo(long startTime) {
 		long endTime = Calendar.getInstance().getTimeInMillis();
-		long diff = endTime - startTime;
-		LOGGER.logMessage(Level.INFO, "Execution time for " + currentThreadName + ": " + diff);
+		long runningTime = endTime - startTime;
+		LOGGER.logMessage(Level.INFO, "Execution time for " + currentThreadName + ": " + runningTime);
 	}
 
+	/**
+	 * The colors list is filled by a given color scheme
+	 */
 	private static void fillColorsList() {
 		colors.add(0x3e1d0e);
 		colors.add(0x0d0118);

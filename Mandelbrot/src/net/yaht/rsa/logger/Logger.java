@@ -6,6 +6,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.SimpleFormatter;
 
+/**
+ * Contains setting up of a logger object
+ */
 public class Logger {
 	private java.util.logging.Logger logger;
 	private static Handler fileHandler;
@@ -14,6 +17,9 @@ public class Logger {
 		setUpFileHandler();
 	}
 
+	/**
+	 * Sets logging output to file
+	 */
 	private static void setUpFileHandler() {
 		try {
 			fileHandler = new FileHandler("log/mandelbrot.log");
@@ -27,6 +33,12 @@ public class Logger {
 		fileHandler.setLevel(Level.ALL);
 	}
 
+	/**
+	 * Constructs a logger with given name and minimum level
+	 * 
+	 * @param className Name of the logger
+	 * @param loggingLevel Minimum level to log on
+	 */
 	public Logger(String className, Level loggingLevel) {
 		logger = java.util.logging.Logger.getLogger(className);
 		logger.addHandler(fileHandler);

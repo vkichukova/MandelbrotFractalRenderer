@@ -13,11 +13,21 @@ import javax.imageio.ImageIO;
 
 import net.yaht.rsa.logger.Logger;
 
+/**
+ * Contains logic for rendering the image of Mandelbrot set fractal
+ */
 public class ImageRenderer {
 
 	private static final String IMAGE_FORMAT = "png";
 	private static final Logger LOGGER = new Logger(ImageRenderer.class.getName(), Level.INFO);
 
+	/**
+	 * Starts the threads that render the separate columns of the image
+	 * 
+	 * @param imageProperties Properties of the image to be rendered
+	 * @throws IOException          If I/O exception occurs
+	 * @throws InterruptedException If the thread gets interrupted
+	 */
 	public void renderImage(ImageProperties imageProperties) throws IOException, InterruptedException {
 		int imageWidth = imageProperties.getImageWidth();
 		BufferedImage image = new BufferedImage(imageWidth, imageProperties.getImageHeight(),
@@ -42,9 +52,14 @@ public class ImageRenderer {
 		}
 	}
 
+	/**
+	 * Logs information about the execution time of the program
+	 * 
+	 * @param startTime Starting timestamp
+	 */
 	private void logProgramExecutionInfo(long startTime) {
 		long endTime = Calendar.getInstance().getTimeInMillis();
-		long diff = endTime - startTime;
-		LOGGER.logMessage(Level.INFO, "Program execution time: " + diff);
+		long runningTime = endTime - startTime;
+		LOGGER.logMessage(Level.INFO, "Program execution time: " + runningTime);
 	}
 }

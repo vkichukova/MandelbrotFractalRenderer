@@ -2,10 +2,11 @@ package net.yaht.rsa;
 
 import org.apache.commons.cli.CommandLine;
 
+/**
+ * Contains default values for the properties of the fractal image
+ */
 public class ImageProperties {
-	/**
-	 * Default values for the properties of the fractal image
-	 */
+	
 	private int imageWidth = 640;
 	private int imageHeight = 480;
 	private double xMin = -2.0;
